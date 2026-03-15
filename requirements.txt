@@ -1,3 +1,6 @@
 datasets
 pillow
 numpy
+matplotlib
+seaborn
+scipy
