@@ -1,118 +1,212 @@
-# Workshop 2 — Estimación de Edad a partir de Imágenes Faciales (CNN – Regresión)
+# Workshop 2 — Machine Learning & Deep Learning Aplicado
+
+Este proyecto integra dos problemas supervisados independientes: uno de **clasificación** y uno de **regresión**, aplicando el flujo completo de un proyecto de Machine Learning: análisis del problema, exploración de datos, preprocesamiento, entrenamiento, evaluación y análisis de resultados.
+
+---
+
+# Problema 1 — Detección de Fatiga Muscular (Clasificación – EMG)
 
 ## Descripción General
 
-Este proyecto aborda el problema de **regresión** de estimar la edad de una persona a partir de una imagen facial, utilizando una Red Neuronal Convolucional (CNN) entrenada de extremo a extremo. Se emplea el dataset **UTKFace** (`jangedoo/utkface-new`) disponible en Kaggle, que provee más de 23,000 imágenes faciales con etiquetas numéricas de edad codificadas en los nombres de archivo.
+Este problema consiste en la **clasificación del estado de fatiga muscular** en ciclistas a partir de señales de electromiografía (EMG) registradas en 8 músculos de la pierna dominante durante pruebas de sprint. A partir de estas señales se extraen características en el dominio del tiempo y de la frecuencia, las cuales se utilizan para entrenar modelos de Machine Learning capaces de clasificar si el músculo se encuentra en **condición normal** o en **estado de fatiga**.
 
-El desarrollo sigue un flujo completo de ciencia de datos: análisis exploratorio, preprocesamiento robusto, diseño y entrenamiento de la CNN, evaluación cuantitativa con múltiples métricas y prueba con muestras externas.
+El desarrollo incluye extracción de características, análisis exploratorio, preprocesamiento, entrenamiento de modelos, evaluación y prueba con muestras artificiales.
+
+---
 
 ## Objetivo
 
-Construir un modelo CNN capaz de recibir una imagen facial redimensionada a **128 × 128 × 3** y devolver un valor numérico continuo que represente la edad estimada del sujeto, minimizando el error absoluto medio (MAE) sobre un conjunto de prueba no visto durante el entrenamiento.
+Construir un modelo de clasificación que permita determinar el estado muscular del sujeto a partir de características extraídas de señales EMG en ventanas de **1 segundo**, clasificando en:
+
+- **0 = Condición normal**
+- **1 = Fatiga muscular**
+
+---
+
+## Dataset
+
+| Característica | Detalle |
+|---|---|
+| Nombre | Muscle Fatigue Cycling |
+| Fuente | HuggingFace – YominE/Muscle_Fatigue_Cycling |
+| Tipo de datos | Señales EMG |
+| Canales | 8 músculos |
+| Tipo de problema | Clasificación binaria |
+| Target | Estado muscular |
+
+Las señales EMG reflejan la actividad eléctrica del músculo. Cuando aparece la fatiga muscular, se producen cambios en la amplitud de la señal y en su contenido frecuencial, lo que permite detectar el desgaste muscular mediante análisis de señales y Machine Learning.
+
+---
+
+## Extracción de Características
+
+Las señales EMG fueron segmentadas en **ventanas de 1 segundo** y para cada ventana y cada canal se extrajeron características en el dominio del tiempo y de la frecuencia.
+
+### Dominio del tiempo
+- RMS
+- Varianza
+- Cruces por cero
+- Pendiente media
+
+### Dominio de la frecuencia
+- Frecuencia media
+- Frecuencia mediana
+- Potencia espectral
+
+Estas características permiten capturar cambios fisiológicos asociados a la fatiga muscular, como el aumento de la amplitud de la señal y la disminución de las frecuencias altas.
+
+---
+
+## Procesamiento de Datos
+
+Se realizó:
+
+- Manejo de valores nulos.
+- Estandarización de características.
+- División del dataset en:
+  - Train: 70%
+  - Validation: 15%
+  - Test: 15%
+- Implementación de un pipeline con **scikit-learn**.
+
+---
+
+## Modelos Implementados
+
+Se entrenaron y compararon los siguientes modelos:
+
+- k-Nearest Neighbors (kNN)
+- Decision Tree
+- Random Forest
+- Gradient Boosting
+- Deep Neural Network (DNN)
+
+---
+
+## Métricas de Evaluación
+
+| Métrica | Descripción |
+|---|---|
+| Accuracy | Precisión global |
+| Precision | Exactitud en predicciones positivas |
+| Recall | Capacidad de detectar fatiga |
+| F1-Score | Balance entre Precision y Recall |
+
+El mejor modelo fue seleccionado con base en su desempeño en validación y posteriormente evaluado sobre el conjunto de prueba mediante matriz de confusión y métricas de clasificación.
+
+---
+
+## Conclusión Problema 1
+
+Las señales EMG contienen información suficiente para detectar fatiga muscular. Las características en el dominio del tiempo y la frecuencia permiten diferenciar entre músculo fatigado y no fatigado, y los modelos de Machine Learning logran clasificar el estado muscular con buen desempeño.
+
+---
+
+# Problema 2 — Estimación de Edad a partir de Imágenes Faciales (CNN – Regresión)
+
+## Descripción General
+
+Este problema aborda el problema de **regresión** de estimar la edad de una persona a partir de una imagen facial, utilizando una Red Neuronal Convolucional (CNN) entrenada de extremo a extremo. Se emplea el dataset **UTKFace**, que contiene más de 23,000 imágenes faciales con etiquetas de edad.
+
+El desarrollo sigue un flujo completo de ciencia de datos: análisis exploratorio, preprocesamiento, diseño y entrenamiento de la CNN, evaluación cuantitativa y prueba con muestras externas.
+
+---
+
+## Objetivo
+
+Construir un modelo CNN capaz de recibir una imagen facial redimensionada a **128 × 128 × 3** y devolver un valor numérico continuo que represente la edad estimada del sujeto, minimizando el error absoluto medio (MAE).
+
+---
 
 ## Dataset
 
 | Característica | Detalle |
 |---|---|
 | Nombre | UTKFace |
-| Fuente | [Kaggle – jangedoo/utkface-new](https://www.kaggle.com/datasets/jangedoo/utkface-new) |
-| Carpeta usada | `UTKFace/` |
-| Convención de nombre | `edad_genero_raza_timestamp.jpg.chip.jpg` |
-| Imágenes totales | ~23,700 |
-| Rango de edades | 0 – 116 años (valores extremos > 100 se filtran) |
-| Formato | JPEG recortado por rostro (`chip`), resolución variable, RGB |
+| Fuente | Kaggle – jangedoo/utkface-new |
+| Imágenes | ~23,700 |
+| Rango de edades | 0 – 116 años |
+| Formato | Imágenes RGB |
 
-## Estructura del Repositorio
+---
 
-```
-workshop_2/
-├── README.md                  # Este archivo
-├── requirements.txt           # Dependencias del proyecto
-├── .gitignore                 # Exclusiones de Git
-└── regresion/
-    ├── regresion.ipynb        # Notebook principal con todo el desarrollo
-    ├── figures/               # Gráficos generados durante la ejecución
-    │   ├── histograma_edades.png
-    │   ├── muestras_dataset.png
-    │   ├── curvas_entrenamiento.png
-    │   ├── real_vs_predicho.png
-    │   ├── histograma_errores.png
-    │   └── prueba_artificial.png
-    └── models/                # Modelo entrenado (no versionado en Git)
-        └── mejor_modelo_edad.h5
-```
+## Procesamiento de Datos
 
-## Tecnologías y Librerías
+- Redimensionamiento de imágenes a 128 × 128.
+- Normalización de valores de píxeles.
+- Data augmentation.
+- División en Train, Validation y Test.
+- Pipeline de preprocesamiento reproducible.
 
-- **Python 3.10+**
-- **TensorFlow / Keras 2.13+** — construcción y entrenamiento de la CNN
-- **NumPy, Pandas** — manipulación de datos
-- **Matplotlib, Seaborn** — visualización
-- **scikit-learn** — métricas de evaluación y división de datos
-- **OpenCV / Pillow** — carga y preprocesamiento de imágenes
+---
 
-## Instrucciones de Ejecución
+## Modelo CNN
 
+El modelo utilizado es una **Red Neuronal Convolucional** con:
+
+- Capas convolucionales
+- Capas de pooling
+- Capas densas
+- Dropout para evitar overfitting
+- Función de pérdida para regresión (MAE / MSE)
+
+---
+
+## Métricas de Evaluación
+
+| Métrica | Descripción |
+|---|---|
+| MAE | Error absoluto medio |
+| RMSE | Raíz del error cuadrático medio |
+| R² | Coeficiente de determinación |
+
+Estas métricas se evaluaron sobre Train, Validation y Test, junto con las curvas de pérdida para analizar overfitting o underfitting.
+
+---
+
+## Conclusión Problema 2
+
+El modelo CNN logra estimar la edad a partir de imágenes faciales con un error promedio bajo. Sin embargo, el desempeño depende de la distribución de edades del dataset y de la calidad de las imágenes, por lo que técnicas como Data Augmentation y Regularización son fundamentales para mejorar la generalización.
+
+---
+
+# Tecnologías y Librerías
+
+- Python 3
+- NumPy
+- Pandas
+- Matplotlib
+- Seaborn
+- SciPy
+- scikit-learn
+- TensorFlow / Keras
+- PyTorch
+- OpenCV / Pillow
+
+---
+
+# Conclusión General del Workshop
+
+En este workshop se abordaron dos problemas distintos de aprendizaje supervisado:
+
+- **Clasificación** utilizando características extraídas de señales EMG.
+- **Regresión** utilizando imágenes faciales y redes neuronales convolucionales.
+
+Ambos problemas siguieron el flujo completo de un proyecto de Machine Learning, incluyendo análisis del problema, preprocesamiento, entrenamiento, evaluación y análisis de resultados, permitiendo aplicar conceptos tanto de Machine Learning tradicional como de Deep Learning.
+
+---
+
+# Instrucciones de Ejecución
 ```bash
 # 1. Clonar el repositorio
-git clone <url-del-repositorio>
-cd workshop_2
-
+git clone https://github.com/SSloan07/Report2ArtificialInteligence.git
+cd Report2ArtificialInteligence
 # 2. Crear entorno virtual e instalar dependencias
 python -m venv venv
 source venv/bin/activate        # Linux / macOS
 # venv\Scripts\activate         # Windows
 pip install -r requirements.txt
-
-# 3. El dataset se descarga automáticamente desde Kaggle al ejecutar
-#    la primera celda del notebook (requiere cuenta de Kaggle configurada)
-
-# 4. Ejecutar el notebook
-jupyter notebook regresion/regresion.ipynb
-```
-
-> **Importante:** Asegurarse de tener las credenciales de Kaggle configuradas (`~/.kaggle/kaggle.json`) para que `kagglehub` pueda descargar el dataset automáticamente.
-
-## Descripción del Notebook
-
-El notebook `regresion/regresion.ipynb` está organizado en las siguientes secciones:
-
-1. **Configuración y carga de datos** — importaciones, rutas, semilla aleatoria, lectura del dataset.
-2. **Análisis preliminar del problema** — justificación teórica de la regresión, descripción de las variables de entrada y del protocolo de adquisición.
-3. **Análisis Exploratorio de Datos (EDA)** — histogramas de edad, estadísticos descriptivos, análisis de calidad de imagen, visualización de muestras.
-4. **Preprocesamiento de datos** — redimensionamiento, normalización, data augmentation, split train/val/test.
-5. **Diseño y entrenamiento del modelo CNN** — arquitectura, hiperparámetros, callbacks, entrenamiento.
-6. **Evaluación del modelo** — métricas MAE, RMSE, R² sobre los tres conjuntos; curvas de pérdida; gráficos de predicción.
-7. **Prueba con muestra artificial** — inferencia sobre imágenes externas, análisis de sensibilidad.
-8. **Conclusiones y trabajo futuro** — hallazgos principales, limitaciones, mejoras propuestas.
-
-## Métricas Utilizadas
-
-| Métrica | Descripción |
-|---|---|
-| **MAE** (Mean Absolute Error) | Error promedio en años; interpretable directamente. |
-| **RMSE** (Root Mean Squared Error) | Penaliza errores grandes; sensible a outliers. |
-| **R²** (Coeficiente de determinación) | Proporción de varianza explicada por el modelo. |
-
-## Principales Hallazgos
-
-- La distribución de edades en el dataset está fuertemente concentrada entre los 20 y 40 años, lo que genera un sesgo hacia predicciones en ese rango.
-- Las imágenes presentan alta variabilidad de resolución, iluminación y pose, lo que supone un reto para la generalización del modelo.
-- El modelo CNN entrenado alcanza un MAE competitivo sobre el conjunto de prueba, con evidencia de capacidad de generalización razonable.
-- Se identificó riesgo de sobreajuste que se mitigó parcialmente con Dropout, Data Augmentation y EarlyStopping.
-
-## Posibles Mejoras Futuras
-
-- Emplear Transfer Learning con arquitecturas pre-entrenadas (VGGFace, ResNet50, EfficientNet).
-- Ampliar el dataset combinando múltiples fuentes (IMDB-WIKI, MORPH, AgeDB).
-- Implementar técnicas de balanceo por rangos etarios (oversampling, pesos por clase).
-- Explorar funciones de pérdida asimétricas o de tipo Huber para mejorar robustez a outliers.
-- Incorporar detección y alineación facial como paso previo al preprocesamiento.
-
-## Autor
-
-Proyecto desarrollado como parte del curso universitario de Deep Learning / Visión por Computador — 5.º semestre.
-
-## Licencia
-
-Este proyecto es de uso académico. El dataset original pertenece a sus respectivos autores y está sujeto a la licencia indicada en Kaggle.
+# 3. Ejecutar los notebooks
+jupyter notebook
+Problema 1: Classification/MuscleFatigueClassification.ipynb
+Problema 2: regresion/regresion.ipynb
