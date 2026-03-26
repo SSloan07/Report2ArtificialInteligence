@@ -166,7 +166,7 @@ Estas métricas se evaluaron sobre Train, Validation y Test, junto con las curva
 
 ## Conclusión Problema 2
 
-El modelo CNN logra estimar la edad a partir de imágenes faciales con un error promedio bajo. Sin embargo, el desempeño depende de la distribución de edades del dataset y de la calidad de las imágenes, por lo que técnicas como Data Augmentation y Regularización son fundamentales para mejorar la generalización.
+El modelo CNN fue entrenado con un número limitado de épocas, lo que impactó el rendimiento final. El desempeño depende de la distribución de edades del dataset y del tiempo de entrenamiento, por lo que ampliar las épocas y aplicar técnicas como Transfer Learning serían los pasos más importantes para mejorar la generalización.
 
 ---
 
