@@ -166,7 +166,7 @@ Estas métricas se evaluaron sobre Train, Validation y Test, junto con las curva
 
 ## Conclusión Problema 2
 
-El modelo CNN fue entrenado con un número limitado de épocas, lo que impactó el rendimiento final. El desempeño depende de la distribución de edades del dataset y del tiempo de entrenamiento, por lo que ampliar las épocas y aplicar técnicas como Transfer Learning serían los pasos más importantes para mejorar la generalización.
+El modelo CNN entrenado desde cero obtuvo un MAE de ~14.8 años y un R² negativo, indicando subajuste severo. Incluso al configurar hasta 50 épocas, EarlyStopping detuvo el entrenamiento en la época 16 sin mejora adicional, lo que confirma que la limitación principal es arquitectónica y no de duración del entrenamiento. Aplicar Transfer Learning con redes pre-entrenadas y balancear la distribución de edades serían los pasos más importantes para mejorar la generalización.
 
 ---
 
